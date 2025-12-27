@@ -47,18 +47,22 @@ The application currently:
 - [ ] Store transcription output with timestamps
 
 ### Stage 4: Keyword & EAS Detection
-- [ ] Implement keyword detection system
-- [ ] Add EAS (Emergency Alert System) specific detection
-  - EAS header tone detection (853 Hz + 960 Hz)
-  - EAS message parsing (SAME protocol)
-- [ ] Create configurable keyword/phrase lists
-- [ ] Implement confidence scoring
+- [ ] Implement keyword detection system (from transcribed text)
+  - Create configurable keyword/phrase lists
+  - Implement confidence scoring
+- [ ] Add EAS (Emergency Alert System) detection (direct from audio signal)
+  - Integrate existing EAS detection tools (e.g., multimon-ng, dsp-eas)
+  - EAS header tone detection (853 Hz + 960 Hz dual-tone)
+  - SAME (Specific Area Message Encoding) protocol parsing
+  - EAS runs in parallel with transcription pipeline for faster alerts
 
 ### Stage 5: Notification System
 - [ ] Design notification API/webhook system
-- [ ] Implement integration with external applications
-- [ ] Add alert severity levels
+- [ ] Implement "flash" notifications for EAS alerts (immediate, high-priority)
+- [ ] Implement standard notifications for keyword matches
+- [ ] Add alert severity levels and priority routing
 - [ ] Create notification queue and delivery system
+- [ ] Implement integration with external applications
 - [ ] Add logging and monitoring
 
 ## Technical Considerations
@@ -70,13 +74,16 @@ The application currently:
 
 ### Future Dependencies
 - Deepgram API (speech recognition - primary choice)
-- EAS tone detection library
-- Notification service (webhooks, MQTT, etc.)
+- EAS detection tools (multimon-ng, dsp-eas, or similar for SAME decoding)
+- Notification service (webhooks, MQTT, WebSockets, etc.)
 - Configuration management system (to support alternative STT engines)
 
 ### Architecture Notes
-- Pipeline: SDR → Audio Processing → Transcription → Detection → Notification
+- Dual Pipeline Architecture:
+  - **Transcription Path**: SDR → Audio Processing → Deepgram STT → Keyword Detection → Notification
+  - **EAS Path**: SDR → Audio Processing → EAS Decoder → Flash Notification (parallel, faster)
 - Real-time processing requirements
+- EAS detection bypasses transcription for immediate alerting
 - Consider async/streaming architecture for scalability
 
 ## Configuration
@@ -91,3 +98,6 @@ The application currently:
 - Project name "sdr-transcription" reflects the transcription goal
 - Initial focus is on NOAA Weather Radio but architecture should support other frequencies
 - EAS detection is critical for emergency notifications
+- EAS alerts detected directly from audio signal using known tools (no transcription needed)
+- EAS "flash" notifications should be immediate and high-priority
+- Dual pipeline approach: EAS detection runs parallel to transcription for faster emergency alerts
