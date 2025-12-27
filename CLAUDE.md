@@ -41,7 +41,7 @@ The application currently:
 - [ ] Add configuration system for frequencies and settings
 
 ### Stage 3: Speech-to-Text Integration
-- [ ] Integrate speech recognition engine (options: Whisper, Google Speech-to-Text, Azure Speech Services)
+- [ ] Integrate Deepgram speech recognition engine (with configurable fallback options)
 - [ ] Implement real-time transcription pipeline
 - [ ] Handle continuous audio stream processing
 - [ ] Store transcription output with timestamps
@@ -69,9 +69,10 @@ The application currently:
 - FFmpeg
 
 ### Future Dependencies
-- Speech recognition library (TBD)
+- Deepgram API (speech recognition - primary choice)
 - EAS tone detection library
 - Notification service (webhooks, MQTT, etc.)
+- Configuration management system (to support alternative STT engines)
 
 ### Architecture Notes
 - Pipeline: SDR → Audio Processing → Transcription → Detection → Notification
