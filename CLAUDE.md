@@ -40,11 +40,12 @@ The application currently:
 - [ ] Create audio chunk processing for real-time transcription
 - [ ] Add configuration system for frequencies and settings
 
-### Stage 3: Speech-to-Text Integration
+### Stage 3: Speech-to-Text Integration (On-Demand)
 - [ ] Integrate Deepgram speech recognition engine (with configurable fallback options)
-- [ ] Implement real-time transcription pipeline
-- [ ] Handle continuous audio stream processing
+- [ ] Implement on-demand transcription activation (via MQTT command or web interface)
+- [ ] Handle real-time audio stream processing when active
 - [ ] Store transcription output with timestamps
+- [ ] Auto-stop transcription after configurable timeout or explicit stop command
 
 ### Stage 4: Keyword & EAS Detection
 - [ ] Implement keyword detection system (from transcribed text)
@@ -60,6 +61,9 @@ The application currently:
 - [ ] Implement MQTT publisher for alerts
 - [ ] Publish EAS alerts to MQTT (immediate, high-priority topic)
 - [ ] Publish keyword matches to MQTT (standard topic)
+- [ ] Implement MQTT command subscription for transcription control
+  - Start/stop transcription commands
+  - Transcription status reporting
 - [ ] Add alert metadata (timestamp, severity, message content)
 - [ ] Configure MQTT broker connection settings
 - [ ] Enable Home Assistant and other MQTT consumer integration
@@ -80,10 +84,13 @@ The application currently:
 
 ### Architecture Notes
 - Dual Pipeline Architecture:
-  - **Transcription Path**: SDR → Audio Processing → Deepgram STT → Keyword Detection → MQTT Publish
-  - **EAS Path**: SDR → Audio Processing → EAS Decoder → MQTT Publish (parallel, faster)
-- Real-time processing requirements
-- EAS detection bypasses transcription for immediate alerting
+  - **Transcription Path** (on-demand): SDR → Audio Processing → Deepgram STT → Keyword Detection → MQTT Publish
+  - **EAS Path** (always running): SDR → Audio Processing → EAS Decoder → MQTT Publish
+- EAS detection runs continuously, independent of transcription
+- Deepgram transcription only activated on-demand (MQTT command or web interface)
+  - Reduces API costs by not transcribing 24/7
+  - EAS alerts don't require transcription
+- MQTT bidirectional: publishes alerts, subscribes to control commands
 - MQTT output enables easy integration with Home Assistant and other automation systems
 - Lightweight notification approach - no complex queuing needed
 
@@ -100,6 +107,9 @@ The application currently:
 - Initial focus is on NOAA Weather Radio but architecture should support other frequencies
 - EAS detection is critical for emergency notifications
 - EAS alerts detected directly from audio signal using known tools (no transcription needed)
+- Deepgram transcription is on-demand only (not continuous) to reduce API costs
+  - Activated via MQTT command or web interface
+  - EAS detection runs 24/7 without transcription costs
 - Simple MQTT publishing for notifications - no heavy infrastructure needed
 - MQTT enables easy integration with Home Assistant, Node-RED, and other automation platforms
-- Dual pipeline approach: EAS detection runs parallel to transcription for faster emergency alerts
+- Dual pipeline approach: EAS detection runs continuously, transcription only when needed
