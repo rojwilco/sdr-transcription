@@ -56,14 +56,14 @@ The application currently:
   - SAME (Specific Area Message Encoding) protocol parsing
   - EAS runs in parallel with transcription pipeline for faster alerts
 
-### Stage 5: Notification System
-- [ ] Design notification API/webhook system
-- [ ] Implement "flash" notifications for EAS alerts (immediate, high-priority)
-- [ ] Implement standard notifications for keyword matches
-- [ ] Add alert severity levels and priority routing
-- [ ] Create notification queue and delivery system
-- [ ] Implement integration with external applications
-- [ ] Add logging and monitoring
+### Stage 5: Notification System (MQTT)
+- [ ] Implement MQTT publisher for alerts
+- [ ] Publish EAS alerts to MQTT (immediate, high-priority topic)
+- [ ] Publish keyword matches to MQTT (standard topic)
+- [ ] Add alert metadata (timestamp, severity, message content)
+- [ ] Configure MQTT broker connection settings
+- [ ] Enable Home Assistant and other MQTT consumer integration
+- [ ] Add basic logging
 
 ## Technical Considerations
 
@@ -75,16 +75,17 @@ The application currently:
 ### Future Dependencies
 - Deepgram API (speech recognition - primary choice)
 - EAS detection tools (multimon-ng, dsp-eas, or similar for SAME decoding)
-- Notification service (webhooks, MQTT, WebSockets, etc.)
+- MQTT client library (paho-mqtt or similar)
 - Configuration management system (to support alternative STT engines)
 
 ### Architecture Notes
 - Dual Pipeline Architecture:
-  - **Transcription Path**: SDR → Audio Processing → Deepgram STT → Keyword Detection → Notification
-  - **EAS Path**: SDR → Audio Processing → EAS Decoder → Flash Notification (parallel, faster)
+  - **Transcription Path**: SDR → Audio Processing → Deepgram STT → Keyword Detection → MQTT Publish
+  - **EAS Path**: SDR → Audio Processing → EAS Decoder → MQTT Publish (parallel, faster)
 - Real-time processing requirements
 - EAS detection bypasses transcription for immediate alerting
-- Consider async/streaming architecture for scalability
+- MQTT output enables easy integration with Home Assistant and other automation systems
+- Lightweight notification approach - no complex queuing needed
 
 ## Configuration
 
@@ -99,5 +100,6 @@ The application currently:
 - Initial focus is on NOAA Weather Radio but architecture should support other frequencies
 - EAS detection is critical for emergency notifications
 - EAS alerts detected directly from audio signal using known tools (no transcription needed)
-- EAS "flash" notifications should be immediate and high-priority
+- Simple MQTT publishing for notifications - no heavy infrastructure needed
+- MQTT enables easy integration with Home Assistant, Node-RED, and other automation platforms
 - Dual pipeline approach: EAS detection runs parallel to transcription for faster emergency alerts
