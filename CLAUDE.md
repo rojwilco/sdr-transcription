@@ -69,6 +69,20 @@ The application currently:
 - [ ] Enable Home Assistant and other MQTT consumer integration
 - [ ] Add basic logging
 
+### Stage 6: Containerization & Deployment
+- [ ] Create Dockerfile for the application
+- [ ] Configure USB device mapping for RTL-SDR dongle
+  - Use `--device=/dev/bus/usb` or specific device mapping
+  - Add necessary privileges for USB access
+- [ ] Set up docker-compose for easy deployment
+- [ ] Add environment variable configuration for:
+  - MQTT broker settings
+  - Deepgram API key
+  - Frequency and SDR settings
+  - EAS detection parameters
+- [ ] Create volume mounts for persistent data (logs, recordings, config)
+- [ ] Document container deployment and USB troubleshooting
+
 ## Technical Considerations
 
 ### Current Dependencies
@@ -81,6 +95,7 @@ The application currently:
 - EAS detection tools (multimon-ng, dsp-eas, or similar for SAME decoding)
 - MQTT client library (paho-mqtt or similar)
 - Configuration management system (to support alternative STT engines)
+- Docker & Docker Compose (containerized deployment)
 
 ### Architecture Notes
 - Dual Pipeline Architecture:
@@ -93,6 +108,10 @@ The application currently:
 - MQTT bidirectional: publishes alerts, subscribes to control commands
 - MQTT output enables easy integration with Home Assistant and other automation systems
 - Lightweight notification approach - no complex queuing needed
+- Containerized deployment with Docker
+  - RTL-SDR USB device mapped into container
+  - Environment-based configuration
+  - Easy deployment alongside Home Assistant
 
 ## Configuration
 
@@ -113,3 +132,7 @@ The application currently:
 - Simple MQTT publishing for notifications - no heavy infrastructure needed
 - MQTT enables easy integration with Home Assistant, Node-RED, and other automation platforms
 - Dual pipeline approach: EAS detection runs continuously, transcription only when needed
+- Application will be containerized with Docker
+  - RTL-SDR USB device must be mapped into container (`--device=/dev/bus/usb`)
+  - Requires privileged access or specific USB permissions
+  - Docker Compose for simplified deployment and configuration
