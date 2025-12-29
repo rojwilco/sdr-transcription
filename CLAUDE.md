@@ -34,11 +34,22 @@ The application currently:
 - [x] Serve audio stream via web interface
 - [x] Test with NOAA Weather Radio frequency
 
+**Definition of Done:**
+- ✓ User can navigate to web interface and hear live NOAA weather radio
+- ✓ Audio plays continuously without dropouts
+- ✓ Web interface is accessible from any browser on the network
+
 ### Stage 2: Audio Processing Pipeline
 - [ ] Add audio recording/buffering capability
 - [ ] Implement audio quality enhancement (noise reduction, normalization)
 - [ ] Create audio chunk processing for real-time transcription
 - [ ] Add configuration system for frequencies and settings
+
+**Definition of Done:**
+- User can modify frequency settings via config file and restart to tune different stations
+- Audio quality is noticeably improved (less static/noise)
+- System buffers audio without impacting stream playback
+- Configuration changes take effect without code modifications
 
 ### Stage 3: Speech-to-Text Integration (On-Demand)
 - [ ] Integrate Deepgram speech recognition engine (with configurable fallback options)
@@ -46,6 +57,14 @@ The application currently:
 - [ ] Handle real-time audio stream processing when active
 - [ ] Store transcription output with timestamps
 - [ ] Auto-stop transcription after configurable timeout or explicit stop command
+
+**Definition of Done:**
+- User can click a button on web interface to start transcription
+- Live transcription text appears on web page in real-time
+- User can send MQTT command to start/stop transcription remotely
+- Transcription automatically stops after configured timeout
+- Transcription history is viewable with timestamps
+- User can verify transcription accuracy by comparing with heard audio
 
 ### Stage 4: Keyword & EAS Detection
 - [ ] Implement keyword detection system (from transcribed text)
@@ -56,6 +75,14 @@ The application currently:
   - EAS header tone detection (853 Hz + 960 Hz dual-tone)
   - SAME (Specific Area Message Encoding) protocol parsing
   - EAS runs in parallel with transcription pipeline for faster alerts
+
+**Definition of Done:**
+- User can add/remove keywords via config file
+- Web interface highlights detected keywords in transcription
+- EAS alerts are detected and decoded without transcription running
+- User can trigger test EAS tone and verify detection within seconds
+- System logs show keyword matches with confidence scores
+- EAS detection shows SAME header details (event type, area codes, duration)
 
 ### Stage 5: Notification System (MQTT)
 - [ ] Implement MQTT publisher for alerts
@@ -68,6 +95,15 @@ The application currently:
 - [ ] Configure MQTT broker connection settings
 - [ ] Enable Home Assistant and other MQTT consumer integration
 - [ ] Add basic logging
+
+**Definition of Done:**
+- User can subscribe to MQTT topics with `mosquitto_sub` and see messages
+- EAS alerts appear on `noaa/eas/alerts` topic within 5 seconds of detection
+- Keyword matches appear on `noaa/keywords` topic with full context
+- User can send MQTT command to `noaa/transcription/control` to start/stop transcription
+- Home Assistant automation receives and displays alerts
+- MQTT messages include valid JSON with timestamp, severity, and content
+- System status published to `noaa/status` topic (online/offline)
 
 ### Stage 6: Containerization & Deployment
 - [ ] Create Dockerfile for the application
@@ -82,6 +118,15 @@ The application currently:
   - EAS detection parameters
 - [ ] Create volume mounts for persistent data (logs, recordings, config)
 - [ ] Document container deployment and USB troubleshooting
+
+**Definition of Done:**
+- User can run `docker-compose up -d` and system starts successfully
+- RTL-SDR device is accessible within container (verify with `rtl_test`)
+- User can modify `.env` file to change all settings without rebuilding image
+- Container restarts automatically on failure or system reboot
+- Logs persist across container restarts in mounted volume
+- User can deploy on fresh system with only Docker installed
+- README includes complete setup instructions from zero to running
 
 ## Technical Considerations
 
