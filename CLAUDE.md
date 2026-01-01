@@ -40,93 +40,93 @@ The application currently:
 - ✓ Web interface is accessible from any browser on the network
 
 ### Stage 2: Audio Processing Pipeline
-- [ ] Add audio recording/buffering capability
-- [ ] Implement audio quality enhancement (noise reduction, normalization)
-- [ ] Create audio chunk processing for real-time transcription
-- [ ] Add configuration system for frequencies and settings
+- [ ] **[P1]** Add audio recording/buffering capability
+- [ ] **[P1]** Implement audio quality enhancement (noise reduction, normalization)
+- [ ] **[P0]** Create audio chunk processing for real-time transcription
+- [ ] **[P0]** Add configuration system for frequencies and settings
 
 **Definition of Done:**
-- User can modify frequency settings via config file and restart to tune different stations
-- Audio quality is noticeably improved (less static/noise)
-- System buffers audio without impacting stream playback
-- Configuration changes take effect without code modifications
+- **[P0]** User can modify frequency settings via config file and restart to tune different stations
+- **[P1]** Audio quality is noticeably improved (less static/noise)
+- **[P1]** System buffers audio without impacting stream playback
+- **[P0]** Configuration changes take effect without code modifications
 
 ### Stage 3: Speech-to-Text Integration (On-Demand)
-- [ ] Integrate Deepgram speech recognition engine (with configurable fallback options)
-- [ ] Implement on-demand transcription activation (via MQTT command or web interface)
-- [ ] Handle real-time audio stream processing when active
-- [ ] Store transcription output with timestamps
-- [ ] Auto-stop transcription after configurable timeout or explicit stop command
+- [ ] **[P0]** Integrate Deepgram speech recognition engine (with configurable fallback options)
+- [ ] **[P0]** Implement on-demand transcription activation (via MQTT command or web interface)
+- [ ] **[P0]** Handle real-time audio stream processing when active
+- [ ] **[P1]** Store transcription output with timestamps
+- [ ] **[P0]** Auto-stop transcription after configurable timeout or explicit stop command
 
 **Definition of Done:**
-- User can click a button on web interface to start transcription
-- Live transcription text appears on web page in real-time
-- User can send MQTT command to start/stop transcription remotely
-- Transcription automatically stops after configured timeout
-- Transcription history is viewable with timestamps
-- User can verify transcription accuracy by comparing with heard audio
+- **[P0]** User can click a button on web interface to start transcription
+- **[P0]** Live transcription text appears on web page in real-time
+- **[P0]** User can send MQTT command to start/stop transcription remotely
+- **[P0]** Transcription automatically stops after configured timeout
+- **[P1]** Transcription history is viewable with timestamps
+- **[P0]** User can verify transcription accuracy by comparing with heard audio
 
 ### Stage 4: Keyword & EAS Detection
-- [ ] Implement keyword detection system (from transcribed text)
-  - Create configurable keyword/phrase lists
-  - Implement confidence scoring
-- [ ] Add EAS (Emergency Alert System) detection (direct from audio signal)
-  - Integrate existing EAS detection tools (e.g., multimon-ng, dsp-eas)
-  - EAS header tone detection (853 Hz + 960 Hz dual-tone)
-  - SAME (Specific Area Message Encoding) protocol parsing
-  - EAS runs in parallel with transcription pipeline for faster alerts
+- [ ] **[P1]** Implement keyword detection system (from transcribed text)
+  - **[P1]** Create configurable keyword/phrase lists
+  - **[P1]** Implement confidence scoring
+- [ ] **[P0]** Add EAS (Emergency Alert System) detection (direct from audio signal)
+  - **[P0]** Integrate existing EAS detection tools (e.g., multimon-ng, dsp-eas)
+  - **[P0]** EAS header tone detection (853 Hz + 960 Hz dual-tone)
+  - **[P0]** SAME (Specific Area Message Encoding) protocol parsing
+  - **[P0]** EAS runs in parallel with transcription pipeline for faster alerts
 
 **Definition of Done:**
-- User can add/remove keywords via config file
-- Web interface highlights detected keywords in transcription
-- EAS alerts are detected and decoded without transcription running
-- User can trigger test EAS tone and verify detection within seconds
-- System logs show keyword matches with confidence scores
-- EAS detection shows SAME header details (event type, area codes, duration)
+- **[P1]** User can add/remove keywords via config file
+- **[P1]** Web interface highlights detected keywords in transcription
+- **[P0]** EAS alerts are detected and decoded without transcription running
+- **[P0]** User can trigger test EAS tone and verify detection within seconds
+- **[P1]** System logs show keyword matches with confidence scores
+- **[P0]** EAS detection shows SAME header details (event type, area codes, duration)
 
 ### Stage 5: Notification System (MQTT)
-- [ ] Implement MQTT publisher for alerts
-- [ ] Publish EAS alerts to MQTT (immediate, high-priority topic)
-- [ ] Publish keyword matches to MQTT (standard topic)
-- [ ] Implement MQTT command subscription for transcription control
-  - Start/stop transcription commands
-  - Transcription status reporting
-- [ ] Add alert metadata (timestamp, severity, message content)
-- [ ] Configure MQTT broker connection settings
-- [ ] Enable Home Assistant and other MQTT consumer integration
-- [ ] Add basic logging
+- [ ] **[P0]** Implement MQTT publisher for alerts
+- [ ] **[P0]** Publish EAS alerts to MQTT (immediate, high-priority topic)
+- [ ] **[P1]** Publish keyword matches to MQTT (standard topic)
+- [ ] **[P0]** Implement MQTT command subscription for transcription control
+  - **[P0]** Start/stop transcription commands
+  - **[P0]** Transcription status reporting
+- [ ] **[P0]** Add alert metadata (timestamp, severity, message content)
+- [ ] **[P0]** Configure MQTT broker connection settings
+- [ ] **[P0]** Enable Home Assistant and other MQTT consumer integration
+- [ ] **[P0]** Add basic logging
 
 **Definition of Done:**
-- User can subscribe to MQTT topics with `mosquitto_sub` and see messages
-- EAS alerts appear on `noaa/eas/alerts` topic within 5 seconds of detection
-- Keyword matches appear on `noaa/keywords` topic with full context
-- User can send MQTT command to `noaa/transcription/control` to start/stop transcription
-- Home Assistant automation receives and displays alerts
-- MQTT messages include valid JSON with timestamp, severity, and content
-- System status published to `noaa/status` topic (online/offline)
+- **[P0]** User can subscribe to MQTT topics with `mosquitto_sub` and see messages
+- **[P0]** EAS alerts appear on `noaa/eas/alerts` topic within 5 seconds of detection
+- **[P1]** Keyword matches appear on `noaa/keywords` topic with full context
+- **[P0]** User can send MQTT command to `noaa/transcription/control` to start/stop transcription
+- **[P0]** Home Assistant automation receives and displays alerts
+- **[P0]** MQTT messages include valid JSON with timestamp, severity, and content
+- **[P0]** System status published to `noaa/status` topic (online/offline)
 
 ### Stage 6: Containerization & Deployment
-- [ ] Create Dockerfile for the application
-- [ ] Configure USB device mapping for RTL-SDR dongle
-  - Use `--device=/dev/bus/usb` or specific device mapping
-  - Add necessary privileges for USB access
-- [ ] Set up docker-compose for easy deployment
-- [ ] Add environment variable configuration for:
-  - MQTT broker settings
-  - Deepgram API key
-  - Frequency and SDR settings
-  - EAS detection parameters
-- [ ] Create volume mounts for persistent data (logs, recordings, config)
-- [ ] Document container deployment and USB troubleshooting
+- [ ] **[P0]** Create Dockerfile for the application
+- [ ] **[P0]** Configure USB device mapping for RTL-SDR dongle
+  - **[P0]** Use `--device=/dev/bus/usb` or specific device mapping
+  - **[P0]** Add necessary privileges for USB access
+- [ ] **[P0]** Set up docker-compose for easy deployment
+- [ ] **[P0]** Add environment variable configuration for:
+  - **[P0]** MQTT broker settings
+  - **[P0]** Deepgram API key
+  - **[P0]** Frequency and SDR settings
+  - **[P0]** EAS detection parameters
+- [ ] **[P1]** Create volume mounts for persistent data (logs, recordings, config)
+- [ ] **[P0]** Document container deployment and USB troubleshooting
 
 **Definition of Done:**
-- User can run `docker-compose up -d` and system starts successfully
-- RTL-SDR device is accessible within container (verify with `rtl_test`)
-- User can modify `.env` file to change all settings without rebuilding image
-- Container restarts automatically on failure or system reboot
-- Logs persist across container restarts in mounted volume
-- User can deploy on fresh system with only Docker installed
-- README includes complete setup instructions from zero to running
+- **[P0]** User can run `docker-compose up -d` and system starts successfully
+- **[P0]** RTL-SDR device is accessible within container (verify with `rtl_test`)
+- **[P0]** User can modify `.env` file to change all settings without rebuilding image
+- **[P0]** Container restarts automatically on failure or system reboot
+- **[P1]** Logs persist across container restarts in mounted volume
+- **[P0]** User can deploy on fresh system with only Docker installed
+- **[P0]** README includes complete setup instructions from zero to running
 
 ## Technical Considerations
 
